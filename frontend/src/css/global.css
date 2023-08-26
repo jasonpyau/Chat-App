@@ -1,0 +1,45 @@
+#AvailableChats {
+    width: 30%;
+    max-height: 85vh!important;
+}
+
+.tab {
+    width: 60%;
+    background: #161717;
+    max-height: 85vh!important;
+}
+
+/* #scroller * {
+    overflow-anchor: none;
+}
+
+#anchor {
+    overflow-anchor: auto;
+    height: 1px;
+} */
+
+@media(max-width: 850px) {
+    #root {
+        height: 100%;
+    }
+
+    #AvailableChats {
+        width: 90%;
+        height: 350px;
+    }
+
+    .tab {
+        width: 90%;
+        height: 450px;
+    }
+}
+
+@media(max-width: 600px) {
+    #AvailableChats {
+        width: 100%;
+    }
+
+    .tab {
+        width: 100%;
+    }
+}
