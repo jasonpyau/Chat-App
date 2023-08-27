@@ -11,7 +11,7 @@ public class FrontendController {
     
     @GetMapping(path = "/")
     public String index() {
-        return "index";
+        return "forward:/built/index.html";
     }
 
     @GetMapping(path = "/login")

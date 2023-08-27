@@ -8,6 +8,7 @@ import MessageView from './MessageView';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { checkError, checkRedirect } from '../App';
+import UsersView from './UsersView';
 
 
 interface ChatProp {
@@ -119,6 +120,12 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             {
                 (chatSettingsMenu) ?
                 <>
+                    <div className="flex-grow overflow-auto">
+                        <div className="fs-3 text-center">
+                            Chat Members
+                        </div>
+                        <UsersView users={groupChat.users}/>
+                    </div>
                 </>
                 :
                 <>

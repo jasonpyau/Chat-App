@@ -1,11 +1,18 @@
 const path = require('path');
-const target = path.resolve(__dirname, '../backend/src/main/resources/static/built');
+const resources = path.resolve(__dirname, '../backend/src/main/resources');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
     devtool: 'source-map',
     cache: true,
     mode: 'production', //'development',//'production',
+    plugins: [
+        new HtmlWebpackPlugin({
+        title: 'Caching',
+        template: `${resources}/templates/index.html`,
+        publicPath: "/built"
+    })],
     module: {
         rules: [
             {
@@ -26,7 +33,20 @@ module.exports = {
         }
     },
     output: {
-        path: target,
-        filename: 'bundle.js'
+        path: `${resources}/static/built`,
+        filename: '[name].[contenthash].js',
+        clean: true
+    },
+    optimization: {
+        runtimeChunk: 'single',
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+            },
+        },
     }
 };

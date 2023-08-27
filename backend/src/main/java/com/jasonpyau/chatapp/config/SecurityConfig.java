@@ -40,7 +40,8 @@ public class SecurityConfig {
                 auth
                     .requestMatchers("/new_user", "/api/login/new_user").hasRole(Role.NEW_USER.toString())
                     .requestMatchers("/api/login/secure").hasRole(Role.USER.toString())
-                    .requestMatchers("/", "/error", "login", "logout", "/built/**", "/api/login/user", "/api/login/principal").permitAll()
+                    .requestMatchers("/built/**").permitAll()
+                    .requestMatchers("/", "/error", "login", "logout", "/api/login/user", "/api/login/principal").permitAll()
                     .anyRequest().authenticated();
             })
             .oauth2Login(oauth -> {
@@ -61,4 +62,5 @@ public class SecurityConfig {
             });
         return http.build();
     }
+
 }
