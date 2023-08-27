@@ -30,7 +30,7 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
                     <span className="mx-1 fw-semi-bold">{user.displayName}</span>
                     <span className="mx-1 fw-light">{date}</span>
                 </div>
-                <div className="mx-1">
+                <div className="mx-1 text-break">
                     {message.content}
                 </div>
             </div>

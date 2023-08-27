@@ -2,6 +2,7 @@ package com.jasonpyau.chatapp.util;
 
 import java.util.HashMap;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -26,6 +27,12 @@ public class Response {
             res.put(keys[i], values[i]);
         }
         return res;
+    }
+
+    public static ResponseEntity<HashMap<String, Object>> page(Page<?> page) {
+        String[] keys = {"content", "totalPages", "hasNext"};
+        Object[] values = {page.getContent(), page.getTotalPages(), page.hasNext()};
+        return new ResponseEntity<>(Response.createBody(keys, values), HttpStatus.OK);
     }
 
     public static ResponseEntity<HashMap<String, Object>> rateLimit(Long ms) {
@@ -57,4 +64,5 @@ public class Response {
         String[] values = {"error", reason};
         return new ResponseEntity<>(createBody(keys, values), status);
     }
+
 }
