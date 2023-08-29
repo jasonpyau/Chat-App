@@ -4,7 +4,8 @@ export type User = {
     displayName: string,
     avatarURL?: string,
     authenticationProvider: AuthenticationProvider,
-    role: Role
+    role: Role,
+    createdAt: number
 }
 
 export const DefaultPicture: string = 'https://lh3.googleusercontent.com/-cXXaVVq8nMM/AAAAAAAAAAI/AAAAAAAAAKI/_Y1WfBiSnRI/photo.jpg';

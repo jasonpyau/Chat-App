@@ -6,7 +6,7 @@ import { checkError, checkRedirect } from '../App';
 
 interface ProfileProp {
     user: User,
-    setUser: (user: User) => void
+    setUser: (user: User) => void,
 }
 
 const Profile: React.FC<ProfileProp> = (props: ProfileProp) => {
@@ -73,6 +73,10 @@ const Profile: React.FC<ProfileProp> = (props: ProfileProp) => {
             <br/>
             <div className="fs-5">
                 Role: <span className="fw-bold">{user.role}</span>
+            </div>
+            <br/>
+            <div className="fs-5">
+                Account Created: <span className="fw-bold">{new Date(user.createdAt*1000).toLocaleDateString("en-US")}</span>
             </div>
         </div>
     </>

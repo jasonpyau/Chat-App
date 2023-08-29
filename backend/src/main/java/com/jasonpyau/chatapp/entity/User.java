@@ -82,6 +82,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "created_at")
+    private Long createdAt;
+
     @Column(name = "group_chats")
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     @OrderBy("last_message_at DESC")

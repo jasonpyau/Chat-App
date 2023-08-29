@@ -16,6 +16,7 @@ import com.jasonpyau.chatapp.exception.OAuth2AuthenticationProcessingException;
 import com.jasonpyau.chatapp.repository.UserRepository;
 import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfo;
 import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfoFactory;
+import com.jasonpyau.chatapp.util.DateFormat;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -63,6 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .displayName((userInfo.getName() != null) ? userInfo.getName() : "User")
                         .avatarURL(userInfo.getAvatarURL())
                         .role(Role.NEW_USER)
+                        .createdAt(DateFormat.getUnixTime())
                         .build();
         return userRepository.save(user);
     }
