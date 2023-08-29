@@ -82,7 +82,7 @@ const NewChat: React.FC<NewChatProp> = (props: NewChatProp) => {
 
     return(
     <>
-        <div className="rounded-end text-white p-5 overflow-auto tab">
+        <div className="p-5 overflow-auto h-100">
             <div className="fw-bold fs-3">
                 New Chat
             </div>

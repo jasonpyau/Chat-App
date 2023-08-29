@@ -1,9 +1,9 @@
-#AvailableChats {
+#LeftPanel {
     width: 30%;
     max-height: 85vh!important;
 }
 
-.tab {
+#RightPanel {
     width: 60%;
     background: #161717;
     max-height: 85vh!important;
@@ -14,23 +14,23 @@
         height: 100%;
     }
 
-    #AvailableChats {
+    #LeftPanel {
         width: 90%;
-        height: 350px;
+        height: 400px;
     }
 
-    .tab {
+    #RightPanel {
         width: 90%;
-        height: 450px;
+        height: 500px;
     }
 }
 
 @media(max-width: 600px) {
-    #AvailableChats {
-        width: 100%;
+    #LeftPanel {
+        width: 95%;
     }
 
-    .tab {
-        width: 100%;
+    #RightPanel {
+        width: 95%;
     }
 }

@@ -48,7 +48,7 @@ const GroupChatsView: React.FC<GroupChatsViewProp> = (props: GroupChatsViewProp)
                 groupChats.map(groupChat => { return(
                     <div className="border-bottom border-top text-decoration-none px-1" key={groupChat.id} onClick={() => setChat(groupChat)} style={{cursor: 'pointer', background: (groupChat.id === props.groupChatId && props.tab === 'chat') && 'Gainsboro'}}>
                         <div className="d-flex justify-content-between">
-                            <div className="fs-5">
+                            <div className="fs-5 text-break">
                                 {groupChat.name}
                             </div>
                             <div>

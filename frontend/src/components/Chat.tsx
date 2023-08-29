@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "../css/global.css";
 import { GroupChat } from '../types/GroupChat';
 import SockJS from 'sockjs-client';
@@ -168,8 +168,8 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     
     return(
     <>
-        <div className="rounded-end text-white p-2 tab d-flex flex-column">
-            <div className="fs-3 fw-bold border-bottom my-1 text-center">
+        <div className="p-2 d-flex flex-column h-100">
+            <div className="fs-3 fw-bold border-bottom my-1 text-center text-break">
                 {groupChat.name} { chatSettingsMenu && "- Settings"}
             </div>
             <div className="d-flex justify-content-center my-1 border-bottom">

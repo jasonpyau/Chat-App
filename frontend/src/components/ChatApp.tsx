@@ -8,6 +8,9 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { GroupChat } from '../types/GroupChat';
 import { checkError, checkRedirect } from '../App';
 import Profile from './Profile';
+import UsersView from './UsersView';
+import GroupChatsView from './GroupChatsView';
+import RightPanel from './RightPanel';
 
 interface ChatAppProp {
     user: User,
@@ -16,6 +19,7 @@ interface ChatAppProp {
 }
 
 export const ChatApp: React.FC<ChatAppProp> = (props: ChatAppProp) => {
+    const user = props.user;
     const [tab, setTab] = useState<string>('');
     const [groupChatId, setGroupChatId] = useState<number>();
 
@@ -56,13 +60,26 @@ export const ChatApp: React.FC<ChatAppProp> = (props: ChatAppProp) => {
         {
             (props.loggedIn) ? 
                 <div className="mx-auto my-auto d-flex justify-content-center row" style={{height: "90%"}}>
-                    <LeftPanel user={props.user} tab={tab} setTab={tabButtonClick} groupChats={groupChats} fetchGroupChats={fetchGroupChats} groupChatId={groupChatId} setGroupChatId={setGroupChatId}/>
-                    {tab === 'newChat' && <NewChat user={props.user} groupChats={groupChats} setGroupChats={setGroupChats} setTab={tabButtonClick}/>}
-                    {tab === 'profile' && <Profile user={props.user} setUser={props.setUser}/>}
-                    {tab === 'chat' && groupChats.map(groupChat => { return (
-                        groupChat.id === groupChatId && <Chat groupChat={groupChat} key={groupChat.id} refreshChats={refreshChats} user={props.user} setTab={setTab}/>
-                    )})}
-                    {tab === '' && <div className="rounded-end tab"></div>}
+                    <LeftPanel>
+                        <UsersView users={[user]}/>
+                        <div className="border-bottom d-flex justify-content-evenly py-2">
+                            <button className="btn btn-dark btn-sm" onClick={() => tabButtonClick("newChat")}>
+                                New Chat
+                            </button>
+                            <button className="btn btn-dark btn-sm" onClick={() => tabButtonClick("profile")}>
+                                Profile
+                            </button>
+                        </div>
+                        <GroupChatsView groupChats={groupChats} tab={tab} setTab={setTab} fetchGroupChats={fetchGroupChats} groupChatId={groupChatId} setGroupChatId={setGroupChatId}/>
+                    </LeftPanel>
+                    <RightPanel>
+                        {tab === 'newChat' && <NewChat user={user} groupChats={groupChats} setGroupChats={setGroupChats} setTab={setTab}/>}
+                        {tab === 'profile' && <Profile user={user} setUser={props.setUser}/>}
+                        {tab === 'chat' && groupChats.map(groupChat => { return (
+                            groupChat.id === groupChatId && <Chat groupChat={groupChat} key={groupChat.id} refreshChats={refreshChats} user={user} setTab={setTab}/>
+                        )})}
+                        {tab === '' && <div className="fs-5 text-center p-5 text-wrap">Welcome to Jason Yau's Chat App!</div>}
+                    </RightPanel>
                 </div>
                 :
                 <Welcome/>
