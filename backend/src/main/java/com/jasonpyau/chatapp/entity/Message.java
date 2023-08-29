@@ -58,7 +58,7 @@ public class Message {
     private MessageType messageType;
 
     @JoinColumn(name = "sender")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User sender;
 
     @JoinColumn(name = "group_chat")

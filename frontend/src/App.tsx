@@ -49,10 +49,8 @@ export const App: React.FC<{}> = () => {
 
 export const checkRedirect = (res: AxiosResponse): void => {
     // hacky solution but axios has no better API for this.
-    if (res.status == 302 || res.status == 401 || res.request.responseURL.endsWith("/login")) {
+    if (res.request.responseURL.endsWith("/login")) {
         window.location.href = "/login?error=Session expired, please log back in.";
-    } else if (res.status == 429) {
-        alert("You have been rate limitted. Try again later.");
     }
 }
 

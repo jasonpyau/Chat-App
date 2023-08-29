@@ -21,20 +21,34 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
                                 });
     return(
     <>
-        <div className="border-top border-bottom text-white d-flex justify-content-start mx-2">
-            <div className="my-3 mx-2">
-                <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded-circle"></img>
-            </div>
-            <div className="mx-2 my-3">
-                <div>
-                    <span className="mx-1 fw-semi-bold">{user.displayName}</span>
-                    <span className="mx-1 fw-light">{date}</span>
+        {message.messageType === 'USER_CHAT' &&
+            <div className="border-top border-bottom text-white d-flex justify-content-start mx-2">
+                <div className="my-3 mx-2">
+                    <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded-circle"></img>
                 </div>
-                <div className="mx-1 text-break">
-                    {message.content}
+                <div className="mx-2 my-3">
+                    <div>
+                        <span className="mx-1 fs-5 text-info fw-bold text-break">{user.displayName}</span>
+                        <span className="mx-1 fw-light text-break">{date}</span>
+                    </div>
+                    <div className="mx-1 text-break">
+                        {message.content}
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        {(message.messageType === 'USER_JOIN' || message.messageType === 'USER_LEAVE') &&
+            <div className="border-top border-bottom text-white text-center">
+                <div className="my-3">
+                    <div className="fw-light text-break">
+                        {date}
+                    </div>
+                    <div className="text-break fst-italic fw-medium">
+                        {message.content}
+                    </div>
+                </div>
+            </div>
+        }
     </>
     )
 }

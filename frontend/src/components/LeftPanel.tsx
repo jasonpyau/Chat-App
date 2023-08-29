@@ -10,9 +10,9 @@ interface LeftPanelProp {
     tab: string,
     setTab: (newTab: string) => void,
     groupChats: GroupChat[],
-    refreshGroupChats: () => void,
-    groupChat: GroupChat,
-    setGroupChat: (groupChat: GroupChat) => void
+    fetchGroupChats: () => void,
+    groupChatId: number,
+    setGroupChatId: (groupChatId: number) => void
 }
 
 const LeftPanel: React.FC<LeftPanelProp> = (props: LeftPanelProp) => {
@@ -39,7 +39,7 @@ const LeftPanel: React.FC<LeftPanelProp> = (props: LeftPanelProp) => {
                     Profile
                 </button>
             </div>
-            <GroupChatsView groupChats={props.groupChats} tab={props.tab} setTab={setTab} refreshGroupChats={props.refreshGroupChats} groupChat={props.groupChat} setGroupChat={props.setGroupChat}/>
+            <GroupChatsView groupChats={props.groupChats} tab={props.tab} setTab={setTab} fetchGroupChats={props.fetchGroupChats} groupChatId={props.groupChatId} setGroupChatId={props.setGroupChatId}/>
         </div>
     </>
     )

@@ -67,4 +67,9 @@ public class GroupChat {
         this.users.add(user);
     }
 
+    public void removeFromGroupChat(User user) {
+        user.getGroupChats().remove(this);
+        this.users.remove(user);
+    }
+
 }

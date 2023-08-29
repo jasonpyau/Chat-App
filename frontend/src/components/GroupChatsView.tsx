@@ -6,16 +6,16 @@ interface GroupChatsViewProp {
     groupChats: GroupChat[],
     tab: string,
     setTab: (newTab: string) => void,
-    refreshGroupChats: () => void,
-    groupChat: GroupChat,
-    setGroupChat: (groupChat: GroupChat) => void
+    fetchGroupChats: () => void,
+    groupChatId: number,
+    setGroupChatId: (groupChatId: number) => void
 }
 
 const GroupChatsView: React.FC<GroupChatsViewProp> = (props: GroupChatsViewProp) => {
     const groupChats: GroupChat[] = props.groupChats;
 
     const refreshChats = () => {
-        props.refreshGroupChats();
+        props.fetchGroupChats();
         if (props.tab === "chat") {
             props.setTab("");
         }
@@ -23,7 +23,7 @@ const GroupChatsView: React.FC<GroupChatsViewProp> = (props: GroupChatsViewProp)
 
     const setChat = (groupChat: GroupChat) => {
         props.setTab("chat");
-        props.setGroupChat(groupChat);
+        props.setGroupChatId(groupChat.id);
     }
 
     return(
@@ -46,7 +46,7 @@ const GroupChatsView: React.FC<GroupChatsViewProp> = (props: GroupChatsViewProp)
                 </div>   
                 :
                 groupChats.map(groupChat => { return(
-                    <div className="border-bottom border-top text-decoration-none px-1" key={groupChat.id} onClick={() => setChat(groupChat)} style={{cursor: 'pointer', background: (props.groupChat && groupChat.id === props.groupChat.id && props.tab === 'chat') && 'Gainsboro'}}>
+                    <div className="border-bottom border-top text-decoration-none px-1" key={groupChat.id} onClick={() => setChat(groupChat)} style={{cursor: 'pointer', background: (groupChat.id === props.groupChatId && props.tab === 'chat') && 'Gainsboro'}}>
                         <div className="d-flex justify-content-between">
                             <div className="fs-5">
                                 {groupChat.name}
@@ -58,7 +58,7 @@ const GroupChatsView: React.FC<GroupChatsViewProp> = (props: GroupChatsViewProp)
                         <div className="my-2">
                             {
                                 groupChat.users.map(user => { return(
-                                    <span className="my-1" key={user.username}>@{user.username} </span>
+                                    <span className="my-1 fst-italic" key={user.username}>@{user.username} </span>
                                 )})
                             }
                         </div>
