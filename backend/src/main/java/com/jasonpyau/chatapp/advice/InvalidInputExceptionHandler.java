@@ -38,9 +38,9 @@ public class InvalidInputExceptionHandler {
         return Response.errorMessage(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @MessageExceptionHandler()
+    @MessageExceptionHandler(InvalidInputException.class)
     @SendToUser("/topic/errors")
-    public void handleInvalidInputWebSocketException(InvalidInputException e) {
-
+    public String handleInvalidInputWebSocketException(InvalidInputException e) {
+        return "Invalid input.";
     }
 }

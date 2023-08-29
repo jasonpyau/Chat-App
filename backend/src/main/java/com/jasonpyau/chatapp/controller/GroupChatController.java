@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jasonpyau.chatapp.annotation.GetUser;
+import com.jasonpyau.chatapp.annotation.RateLimitAPI;
+import com.jasonpyau.chatapp.annotation.RateLimitWebSocket;
 import com.jasonpyau.chatapp.entity.Message;
 import com.jasonpyau.chatapp.entity.User;
 import com.jasonpyau.chatapp.form.AddGroupChatUserForm;
 import com.jasonpyau.chatapp.form.NewGroupChatForm;
 import com.jasonpyau.chatapp.service.GroupChatService;
 import com.jasonpyau.chatapp.service.UserService;
+import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
 @Controller
@@ -37,17 +40,20 @@ public class GroupChatController {
     private UserService userService;
 
     @PostMapping(path = "/new", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.EXPENSIVE_TOKEN)
     public ResponseEntity<HashMap<String, Object>> newGroupChat(@GetUser User user, @RequestBody NewGroupChatForm newGroupChatForm) {
         return new ResponseEntity<>(Response.createBody("groupChat", groupChatService.newGroupChat(user, newGroupChatForm)), HttpStatus.OK);
     }
 
     @GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<HashMap<String, Object>> getGroupChats(@GetUser User user) {
         return new ResponseEntity<>(Response.createBody("groupChats", groupChatService.getGroupChats(user)), HttpStatus.OK);
     }
 
     @MessageMapping("/update/{id}/users/add")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.LARGE_TOKEN)
     public Message addUser(@DestinationVariable(value = "id") Long id, Principal principal, @Payload AddGroupChatUserForm form) {
         User user = userService.getUserFromWebSocket(principal);
         return groupChatService.addUser(user, form, id);
@@ -55,6 +61,7 @@ public class GroupChatController {
 
     @MessageMapping("/update/{id}/users/remove")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.BIG_TOKEN)
     public Message removeUser(@DestinationVariable(value = "id") Long id, Principal principal) {
         User user = userService.getUserFromWebSocket(principal);
         return groupChatService.removeUser(user, id);

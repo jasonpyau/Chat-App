@@ -24,7 +24,7 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
         {message.messageType === 'USER_CHAT' &&
             <div className="border-top border-bottom text-white d-flex justify-content-start mx-2">
                 <div className="my-3 mx-2">
-                    <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded-circle"></img>
+                    <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded-circle" referrerPolicy="no-referrer"></img>
                 </div>
                 <div className="mx-2 my-3">
                     <div>

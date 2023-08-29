@@ -64,7 +64,7 @@ export const checkError = (err: AxiosError): void => {
             alert(`Invalid input: ${JSON.stringify((err.response.data as any).reason)}`);
             break;
         case 429:
-            alert("You have been rate limitted. Try again later.");
+            alert(`You have been rate limitted: ${JSON.stringify((err.response.data as any).reason)}`);
             break;
         default:
             alert("Server error, please create an GitHub issue if this persists.");

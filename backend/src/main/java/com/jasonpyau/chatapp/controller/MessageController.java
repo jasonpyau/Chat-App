@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jasonpyau.chatapp.annotation.GetUser;
+import com.jasonpyau.chatapp.annotation.RateLimitAPI;
+import com.jasonpyau.chatapp.annotation.RateLimitWebSocket;
 import com.jasonpyau.chatapp.entity.Message;
 import com.jasonpyau.chatapp.entity.User;
 import com.jasonpyau.chatapp.form.NewMessageForm;
 import com.jasonpyau.chatapp.form.PaginationForm;
 import com.jasonpyau.chatapp.service.MessageService;
 import com.jasonpyau.chatapp.service.UserService;
+import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
 @Controller
@@ -37,16 +40,19 @@ public class MessageController {
     
     @MessageMapping("/send/{id}")
     @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.DEFAULT_TOKEN)
     public Message sendMessage(@DestinationVariable(value = "id") Long id, Principal principal, @Payload NewMessageForm newMessageForm) {
         User user = userService.getUserFromWebSocket(principal);
         return messageService.sendMessage(id, newMessageForm.getContent(), user);
     }
 
     @GetMapping(path = "/{id}/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RateLimitAPI(Token.BIG_TOKEN)
     public ResponseEntity<HashMap<String, Object>> getMessages(@GetUser User user, 
                                                                 @PathVariable("id") Long id, 
                                                                 PaginationForm paginationForm, 
                                                                 @RequestParam("before") Long before) {
         return Response.page(messageService.getMessages(user, id, paginationForm, before));
     }
+
 }

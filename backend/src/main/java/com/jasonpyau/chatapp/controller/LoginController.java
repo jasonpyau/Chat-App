@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jasonpyau.chatapp.annotation.GetUser;
+import com.jasonpyau.chatapp.annotation.RateLimitAPI;
 import com.jasonpyau.chatapp.entity.User;
 import com.jasonpyau.chatapp.entity.User.Role;
 import com.jasonpyau.chatapp.service.UserService;
+import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
 @RestController
@@ -42,13 +44,10 @@ public class LoginController {
     }
 
     @PostMapping(path = "/new_user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<Void> newUser(@GetUser User user, @RequestParam("username") String username) {
         userService.newUser(user, username);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/")).build();
     }
 
-    @GetMapping(path = "/secure")
-    public String secure() {
-        return "This is secure!";
-    }
 }

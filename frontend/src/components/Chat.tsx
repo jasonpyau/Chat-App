@@ -30,6 +30,10 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const stompSubscription = useRef<Subscription>(null);
 
+    const stompErrorSubscription = useRef<Subscription>(null);
+
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
     const [newMessages, setNewMessages] = useState<Message[]>([]);
 
     const [oldMessages, setOldMessages] = useState<Message[]>([]);
@@ -52,6 +56,9 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             if (stompSubscription.current) {
                 stompSubscription.current.unsubscribe();
             }
+            if (stompErrorSubscription.current) {
+                stompErrorSubscription.current.unsubscribe();
+            }
             if (stompClient.connected) {
                 stompClient.disconnect(() => {}, {});
             }
@@ -60,6 +67,7 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const onConnected = () => {
         stompSubscription.current = stompClient.subscribe(`/topic/groupchat/${groupChat.id}`, onMessageReceived);
+        stompErrorSubscription.current = stompClient.subscribe(`/user/topic/errors`, onErrorReceived);
         subscriptionStart.current = Date.now();
         loadMessages();
     }
@@ -93,6 +101,11 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             }
         }
         setNewMessages(newMessages => [...newMessages, message]);
+    }
+
+    const onErrorReceived = (res: Stomp.Message) => {
+        setErrorMessage(res.body);
+        setTimeout(() => {setErrorMessage('')}, 3000);
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -177,6 +190,7 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                     {(chatSettingsMenu) ? "Chat" : "Chat Settings"}
                 </button>
             </div>
+            {errorMessage && <div className="bg-danger p-3 m-2">{errorMessage}</div>}
             {
                 (chatSettingsMenu) ?
                 <>

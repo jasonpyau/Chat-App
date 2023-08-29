@@ -21,7 +21,7 @@ const UsersView: React.FC<UsersViewProp> = (props: UsersViewProp) => {
             users.map(user => { return(
                 <div className="border-bottom d-flex flew-row" key={user.username}>
                     <div className="my-3 mx-2">
-                        <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded"></img>
+                        <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded" referrerPolicy="no-referrer"></img>
                     </div>
                     <div className="my-3 mx-3">
                         <div className="fw-bold text-break">
