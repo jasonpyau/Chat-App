@@ -24,7 +24,9 @@ jobs:
             echo "$PROPERTIES" > backend/src/main/resources/secret.properties
       - name: Shut Down Old Version
         run: |
-            sudo kill -9 $(sudo lsof -t -i:9080) &> /dev/null
+            if sudo lsof -t -i:9080 > /dev/null; then
+	            sudo kill -9 $(sudo lsof -t -i:9080) &> /dev/null
+            fi
       - name: Run Spring Boot
         run: |
             cd backend
