@@ -10,7 +10,7 @@ import lombok.Setter;
 public class PaginationForm {
     
     public static final String PAGE_NUM_ERROR = "'pageNum' should be a positive integer.";
-    public static final String PAGE_SIZE_ERROR = "'pageSize' should be between 1-50.";
+    public static final String PAGE_SIZE_ERROR = "'pageSize' should be between 1-100.";
 
     @Min(value = 0, message = PAGE_NUM_ERROR)
     private Integer pageNum = 0;

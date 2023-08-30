@@ -24,7 +24,7 @@ This website is hosted on my Raspberry Pi, using Cloudflare's free tunneling ser
 *All you need to do to get the app running is run the Spring Boot project; it automatically bundles up the React scripts via Webpack.* 
 
 **Create secrets.properties (./backend/src/main/resouces/secrets.properties)** -
-<a href="https://github.com/jasonpyau/Chat-App/blob/main/backend/src/main/resources/secrets.sample.properties">secrets.sample.properties</a>
+<a href="https://github.com/jasonpyau/Chat-App/blob/main/backend/src/main/resources/secrets.properties.sample">secrets.properties.sample</a>
 
 ```
 MARIADB_SERVER_URL=YOUR_MARIADB_SERVER_URL_HERE

@@ -1,0 +1,31 @@
+name: Deploy Chat App on Git push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+  
+    runs-on: self-hosted
+    
+    steps:
+      - name: File Permissions
+        run: |
+            sudo chown -R jasonpyau:jasonpyau .
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create secrets.properties
+        env:
+          PROPERTIES: ${{ secrets.SECRETS_PROPERTIES }}
+        run: |
+            echo "$PROPERTIES" > backend/src/main/resources/secret.properties
+      - name: Shut Down Old Version
+        run: |
+            sudo kill -9 $(sudo lsof -t -i:9080)
+      - name: Run Spring Boot
+        run: |
+            cd backend
+            sudo nohup mvn spring-boot:run > spring-log.txt 2>&1 &
