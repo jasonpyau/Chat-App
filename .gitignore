@@ -1,4 +1,5 @@
 secrets.properties
+secrets.production.properties
 /built/
 **/node_modules
 **/static/built
