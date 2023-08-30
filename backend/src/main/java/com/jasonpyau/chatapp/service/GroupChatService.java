@@ -15,6 +15,7 @@ import com.jasonpyau.chatapp.exception.InvalidInputException;
 import com.jasonpyau.chatapp.exception.InvalidUserException;
 import com.jasonpyau.chatapp.form.AddGroupChatUserForm;
 import com.jasonpyau.chatapp.form.NewGroupChatForm;
+import com.jasonpyau.chatapp.form.RenameGroupChatForm;
 import com.jasonpyau.chatapp.repository.GroupChatRepository;
 import com.jasonpyau.chatapp.repository.MessageRepository;
 import com.jasonpyau.chatapp.util.CustomValidator;
@@ -35,6 +36,8 @@ public class GroupChatService {
     private final CustomValidator<GroupChat> validator = new CustomValidator<>();
 
     private final CustomValidator<AddGroupChatUserForm> addGroupChatUserFormValidator = new CustomValidator<>();
+
+    private final CustomValidator<RenameGroupChatForm> renameGroupChatFormValidator = new CustomValidator<>();
     
     public GroupChat newGroupChat(User user, NewGroupChatForm newGroupChatForm) {
         if (newGroupChatForm == null || newGroupChatForm.getUsernames() == null || newGroupChatForm.getUsernames().size() > 100) {
@@ -110,5 +113,25 @@ public class GroupChatService {
         groupChat.setLastMessageAt(DateFormat.getUnixTime());
         groupChatRepository.save(groupChat);
         return messageRepository.save(message);
+    }
+
+    public Message renameGroupChat(User user, RenameGroupChatForm form, Long groupChatId) {
+        GroupChat groupChat = validateUserInGroupChat(user, groupChatId);
+        renameGroupChatFormValidator.validate(form);
+        if (groupChat.getName().equals(form.getName())) {
+            return null;
+        }
+        Message message = Message.builder()
+                                .content(String.format("'@%s' renamed the chat to '%s'", user.getUsername(), form.getName()))
+                                .createdAt(DateFormat.getUnixTime())
+                                .modifiedAt(DateFormat.getUnixTime())
+                                .messageType(MessageType.USER_RENAME)
+                                .sender(user)
+                                .groupChat(groupChat)
+                                .build();
+        groupChat.setLastMessageAt(DateFormat.getUnixTime());
+        groupChat.setName(form.getName());
+        groupChatRepository.save(groupChat);
+        return messageRepository.save(message); 
     }
 }

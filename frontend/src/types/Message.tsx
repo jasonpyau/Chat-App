@@ -9,4 +9,4 @@ export type Message = {
     sender: User
 }
 
-export type MessageType = 'USER_JOIN' | 'USER_LEAVE' |'USER_CHAT';
+export type MessageType = 'USER_JOIN' | 'USER_LEAVE' |'USER_CHAT' | 'USER_RENAME';

@@ -48,6 +48,8 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const [notFoundUsername, setNotFoundUsername] = useState<String>('');
 
+    const renameRef = useRef<HTMLInputElement>();
+
     const searchRef = useRef<HTMLInputElement>();
 
     useEffect(() => {
@@ -79,26 +81,8 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const onMessageReceived = async(res: Stomp.Message) => {
         const message: Message = JSON.parse(res.body);
-        if (message.messageType === 'USER_JOIN') {
-            const invokedBy: string = message.content.split("'")[1].substring(1);
-            const user: User = (await axios
-                                        .get("/api/users/search", {
-                                            params: {username: invokedBy}
-                                        })).data.user;
-            groupChat.users.push(user);
-            props.refreshChats(false);  
-        } else if (message.messageType === 'USER_LEAVE') {
-            const invokedBy: string = message.content.split("'")[1].substring(1);
-            const users: User[] = groupChat.users.filter(u => {
-                return u.username !== invokedBy;
-            });
-            groupChat.users = users;
-            if (props.user.username === invokedBy) {
-                props.setTab('');
-                props.refreshChats(true);
-            } else {
-                props.refreshChats(false);
-            }
+        if (['USER_JOIN', 'USER_LEAVE', 'USER_RENAME'].includes(message.messageType)) {
+            props.refreshChats(true);
         }
         setNewMessages(newMessages => [...newMessages, message]);
     }
@@ -165,6 +149,14 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             })
     }
 
+    const renameChat = () => {
+        const form = {
+            name: renameRef.current.value
+        };
+        stompClient.send(`/app/update/${groupChat.id}/rename`, {}, JSON.stringify(form));
+        renameRef.current.value = "";
+    }
+
     const addUser = () => {
         const form = {
             username: searchedUser.username
@@ -195,7 +187,18 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                 (chatSettingsMenu) ?
                 <>
                     <div className="flex-grow overflow-auto">
-                        <div className="py-3 border-top border-bottom">
+                        <div className="py-3 px-4">
+                            <div className="fs-3 text-center text-decoration-underline">
+                                Rename Chat
+                            </div>
+                            <form onSubmit={handleSubmit}>
+                                <br/>
+                                <input type="text" className="form-control" name="rename" placeholder={groupChat.name} ref={renameRef} autoComplete='off'/>
+                                <br/>
+                                <button className="btn-success btn mx-2" onClick={renameChat}>Rename</button>
+                            </form>
+                        </div>
+                        <div className="py-3 px-4">
                             <div className="fs-3 text-center text-decoration-underline">
                                 Add Member
                             </div>
@@ -214,14 +217,14 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                                     </>}
                             </form>
                         </div>
-                        <div className="py-3 border-top border-bottom">
-                            <button className="btn-danger btn mx-2" onClick={leaveChat}>Leave Chat</button>
-                        </div>
-                        <div className="py-3 border-top border-bottom">
+                        <div className="py-3 px-4">
                             <div className="fs-3 text-center text-decoration-underline">
                                 Chat Members
                             </div>
                             <UsersView users={groupChat.users}/>
+                        </div>
+                        <div className="py-3 px-4">
+                            <button className="btn-danger btn mx-2" onClick={leaveChat}>Leave Chat</button>
                         </div>
                     </div>
                 </>

@@ -24,6 +24,7 @@ import com.jasonpyau.chatapp.entity.Message;
 import com.jasonpyau.chatapp.entity.User;
 import com.jasonpyau.chatapp.form.AddGroupChatUserForm;
 import com.jasonpyau.chatapp.form.NewGroupChatForm;
+import com.jasonpyau.chatapp.form.RenameGroupChatForm;
 import com.jasonpyau.chatapp.service.GroupChatService;
 import com.jasonpyau.chatapp.service.UserService;
 import com.jasonpyau.chatapp.service.RateLimitService.Token;
@@ -66,5 +67,12 @@ public class GroupChatController {
         User user = userService.getUserFromWebSocket(principal);
         return groupChatService.removeUser(user, id);
     }
-    
+
+    @MessageMapping("/update/{id}/rename")
+    @SendTo("/topic/groupchat/{id}")
+    @RateLimitWebSocket(Token.LARGE_TOKEN)
+    public Message renameGroupChat(@DestinationVariable(value = "id") Long id, Principal principal, @Payload RenameGroupChatForm form) {
+        User user = userService.getUserFromWebSocket(principal);
+        return groupChatService.renameGroupChat(user, form, id);
+    }
 }

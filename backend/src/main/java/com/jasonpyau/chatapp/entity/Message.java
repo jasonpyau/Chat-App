@@ -35,7 +35,7 @@ public class Message {
     public static final String INVALID_CONTENT = "'content' should be between 1-1000 characters.";
 
     public enum MessageType {
-        USER_JOIN, USER_LEAVE, USER_CHAT
+        USER_JOIN, USER_LEAVE, USER_CHAT, USER_RENAME
     }
     
     @Id
