@@ -3,6 +3,7 @@
 ## Table of Contents
 <ol>
   <li><a href="#about">About</a></li>
+  <li><a href="#demo">Demo</a></li>
   <li><a href="#get-started">Get Started</a></li>
 </ol>
 
@@ -17,6 +18,11 @@ This project takes some inspiration from older versions of Discord.
 <br>
 
 This website is hosted on my Raspberry Pi, using Cloudflare's free tunneling services for SSL certificate and DDoS protection and GitHub Actions for continuous deployment after each Git push.
+
+## Demo
+
+![image](https://github.com/jasonpyau/Chat-App/assets/113565962/dfab1448-2a67-4eb1-b00c-2b2c971b54bf)
+<br>
 
 ## Get Started
 **(Ubuntu)**
