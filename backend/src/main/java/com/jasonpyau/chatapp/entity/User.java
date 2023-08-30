@@ -38,7 +38,7 @@ import lombok.Setter;
 public class User {
     
     public enum AuthenticationProvider {
-        GOOGLE, GITHUB
+        GOOGLE, GITHUB, DISCORD
     }
 
     public enum Role {

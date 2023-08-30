@@ -22,7 +22,7 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
     return(
     <>
         {message.messageType === 'USER_CHAT' &&
-            <div className="border-top border-bottom text-white d-flex justify-content-start mx-2">
+            <div className="border-top text-white d-flex justify-content-start mx-2">
                 <div className="my-3 mx-2">
                     <img src={user.avatarURL || DefaultPicture} alt="Profile Picture" title={`@${user.username}`} height="50" width="50" className="rounded-circle" referrerPolicy="no-referrer"></img>
                 </div>
@@ -38,7 +38,7 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
             </div>
         }
         {['USER_JOIN', 'USER_LEAVE', 'USER_RENAME'].includes(message.messageType) &&
-            <div className="border-top border-bottom text-white text-center">
+            <div className="border-top text-white text-center">
                 <div className="my-3">
                     <div className="fw-light text-break">
                         {date}

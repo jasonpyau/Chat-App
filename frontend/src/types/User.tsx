@@ -12,4 +12,4 @@ export const DefaultPicture: string = 'https://lh3.googleusercontent.com/-cXXaVV
 
 type Role = 'NEW_USER' | 'USER' |'ADMIN';
 
-type AuthenticationProvider = 'GITHUB' | 'GOOGLE';
+type AuthenticationProvider = 'GITHUB' | 'GOOGLE' | 'DISCORD';

@@ -15,6 +15,8 @@ public class OAuth2UserInfoFactory {
                 return new GoogleOAuth2UserInfo(attributes);
             case GITHUB:
                 return new GitHubOAuth2UserInfo(attributes);
+            case DISCORD:
+                return new DiscordOAuth2UserInfo(attributes);
             default:
                 throw new OAuth2AuthenticationProcessingException("OAuth2 Provider not found");
         }
