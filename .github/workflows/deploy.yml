@@ -21,7 +21,7 @@ jobs:
         env:
           PROPERTIES: ${{ secrets.SECRETS_PROPERTIES }}
         run: |
-            echo "$PROPERTIES" > backend/src/main/resources/secret.properties
+            echo "$PROPERTIES" > backend/src/main/resources/secrets.properties
       - name: Shut Down Old Version
         run: |
             cd backend
