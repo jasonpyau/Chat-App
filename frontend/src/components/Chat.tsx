@@ -26,7 +26,7 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const [chatSettingsMenu, setChatSettingsMenu] = useState<boolean>(false);
 
-    const [stompClient] = useState<Client>(Stomp.over(new SockJS("/ws")));
+    const stompClient = useRef<Client>(null);
 
     const stompSubscription = useRef<Subscription>(null);
 
@@ -52,8 +52,12 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const searchRef = useRef<HTMLInputElement>();
 
+    const [lastMessageSent, setLastMessageSent] = useState<number>(0);
+
     useEffect(() => {
-        stompClient.connect({}, onConnected, onError);
+        stompClient.current = Stomp.over(new SockJS("/ws"));
+        const client: Client = stompClient.current;
+        client.connect({}, onConnected, onError);
         return () => {
             if (stompSubscription.current) {
                 stompSubscription.current.unsubscribe();
@@ -61,15 +65,16 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             if (stompErrorSubscription.current) {
                 stompErrorSubscription.current.unsubscribe();
             }
-            if (stompClient.connected) {
-                stompClient.disconnect(() => {}, {});
+            if (client.connected) {
+                client.disconnect(() => {}, {});
             }
         }
     }, []);
 
     const onConnected = () => {
-        stompSubscription.current = stompClient.subscribe(`/topic/groupchat/${groupChat.id}`, onMessageReceived);
-        stompErrorSubscription.current = stompClient.subscribe(`/user/topic/errors`, onErrorReceived);
+        const client: Client = stompClient.current;
+        stompSubscription.current = client.subscribe(`/topic/groupchat/${groupChat.id}`, onMessageReceived);
+        stompErrorSubscription.current = client.subscribe(`/user/topic/errors`, onErrorReceived);
         subscriptionStart.current = Date.now();
         loadMessages();
     }
@@ -97,18 +102,26 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     }
 
     const sendMessage = () => {
-        const message = {
-            content: messageRef.current.value
-        };
-        stompClient.send(`/app/send/${groupChat.id}`, {}, JSON.stringify(message));
-        messageRef.current.value = "";
+        const curr: number = Date.now();
+        const client: Client = stompClient.current;
+        if (curr-lastMessageSent < 500) {
+            setErrorMessage("Please wait 500ms before sending another message.");
+            setTimeout(() => {setErrorMessage('')}, 500);
+        } else {
+            const message = {
+                content: messageRef.current.value
+            };
+            client.send(`/app/send/${groupChat.id}`, {}, JSON.stringify(message));
+            messageRef.current.value = "";
+            setLastMessageSent(curr);
+        }
     }
 
     const loadMessages = () => {
         axios
             .get(`/api/message/${groupChat.id}/get`, {
                 params: {
-                        pageSize: 25,
+                        pageSize: 30,
                         pageNum: pageNum,
                         before: subscriptionStart.current
                     }
@@ -150,24 +163,27 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     }
 
     const renameChat = () => {
+        const client: Client = stompClient.current;
         const form = {
             name: renameRef.current.value
         };
-        stompClient.send(`/app/update/${groupChat.id}/rename`, {}, JSON.stringify(form));
+        client.send(`/app/update/${groupChat.id}/rename`, {}, JSON.stringify(form));
         renameRef.current.value = "";
     }
 
     const addUser = () => {
+        const client: Client = stompClient.current;
         const form = {
             username: searchedUser.username
         };
-        stompClient.send(`/app/update/${groupChat.id}/users/add`, {}, JSON.stringify(form));
+        client.send(`/app/update/${groupChat.id}/users/add`, {}, JSON.stringify(form));
         searchRef.current.value = "";
         setSearchedUser(null);
     }
 
     const leaveChat = () => {
-        stompClient.send(`/app/update/${groupChat.id}/users/remove`, {}, "");
+        const client: Client = stompClient.current;
+        client.send(`/app/update/${groupChat.id}/users/remove`, {}, "");
     }
 
     

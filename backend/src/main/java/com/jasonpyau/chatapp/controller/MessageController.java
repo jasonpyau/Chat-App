@@ -47,7 +47,7 @@ public class MessageController {
     }
 
     @GetMapping(path = "/{id}/get", produces = MediaType.APPLICATION_JSON_VALUE)
-    @RateLimitAPI(Token.BIG_TOKEN)
+    @RateLimitAPI(Token.DEFAULT_TOKEN)
     public ResponseEntity<HashMap<String, Object>> getMessages(@GetUser User user, 
                                                                 @PathVariable("id") Long id, 
                                                                 PaginationForm paginationForm, 

@@ -34,7 +34,7 @@ public class RateLimitService {
     public static final RateLimitService RateLimiter = RateLimitService.builder()
                                                         .tokensPerInterval(200)
                                                         .intervalDuration(Duration.ofSeconds(60))
-                                                        .maximumCacheSize(10000)
+                                                        .maximumCacheSize(2000)
                                                         .cacheDuration(Duration.ofMinutes(10))
                                                         .build();
 

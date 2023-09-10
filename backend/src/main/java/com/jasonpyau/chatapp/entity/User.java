@@ -42,7 +42,7 @@ public class User {
     }
 
     public enum Role {
-        NEW_USER, USER, ADMIN
+        NEW_USER, USER, ADMIN, BANNED
     }
 
     public static final String USERNAME_SIZE_ERROR = "'username' should be between 3-30 characters.";
