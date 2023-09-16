@@ -21,7 +21,9 @@ This website is hosted on my Raspberry Pi, using Cloudflare's free tunneling ser
 
 ## Demo
 
-![image](https://github.com/jasonpyau/Chat-App/assets/113565962/dfab1448-2a67-4eb1-b00c-2b2c971b54bf)
+![image](https://github.com/jasonpyau/Chat-App/assets/113565962/7408d627-3521-4f42-8b14-d30553d97af5)
+
+
 <br>
 
 ## Get Started
