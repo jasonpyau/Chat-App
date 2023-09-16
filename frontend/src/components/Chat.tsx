@@ -190,11 +190,11 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     return(
     <>
         <div className="p-2 d-flex flex-column h-100">
-            <div className="fs-3 fw-bold border-bottom my-1 text-center text-break">
+            <div className="fs-3 fw-bold border-bottom text-center text-break">
                 {groupChat.name} { chatSettingsMenu && "- Settings"}
             </div>
-            <div className="d-flex justify-content-center my-1 border-bottom">
-                <button className="btn btn-dark btn-sm" onClick={() => setChatSettingsMenu(!chatSettingsMenu)}>
+            <div className="d-flex justify-content-center my-1">
+                <button className="btn btn-light btn-sm" onClick={() => setChatSettingsMenu(!chatSettingsMenu)}>
                     {(chatSettingsMenu) ? "Chat" : "Chat Settings"}
                 </button>
             </div>

@@ -56,3 +56,10 @@ sudo apt install maven
 
 sudo mvn spring-boot:run
 ```
+
+**Update Webpack bundle on save**
+```
+cd frontend
+
+npm run watch
+```

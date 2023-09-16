@@ -39,8 +39,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> {
                 auth
                     .requestMatchers("/new_user", "/api/login/new_user").hasRole(Role.NEW_USER.toString())
-                    .requestMatchers("/api/groupchat/**", "/api/message/**", "/api/users/**").hasRole(Role.USER.toString())
-                    .requestMatchers("/topic/**", "/app/**", "/ws/**").hasAnyRole(Role.USER.toString())
+                    .requestMatchers("/api/groupchat/**", "/api/message/**", "/api/users/**").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
+                    .requestMatchers("/topic/**", "/app/**", "/ws/**").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
                     .requestMatchers("/built/**").permitAll()
                     .requestMatchers("/", "/error", "login", "logout", "/api/login/user", "/api/login/principal").permitAll()
                     .anyRequest().authenticated();

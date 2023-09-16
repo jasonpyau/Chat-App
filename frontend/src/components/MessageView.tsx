@@ -38,7 +38,7 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
             </div>
         }
         {['USER_JOIN', 'USER_LEAVE', 'USER_RENAME'].includes(message.messageType) &&
-            <div className="border-top text-white text-center">
+            <div className="border-top text-white text-center mx-2">
                 <div className="my-3">
                     <div className="fw-light text-break">
                         {date}

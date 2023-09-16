@@ -49,7 +49,7 @@ export const App: React.FC<{}> = () => {
 
 export const checkRedirect = (res: AxiosResponse): void => {
     // hacky solution but axios has no better API for this.
-    if (res.request.responseURL.endsWith("/login")) {
+    if (res.status === 302 || res.request.responseURL.endsWith("/login")) {
         window.location.href = "/login?error=Session expired, please log back in.";
     }
 }

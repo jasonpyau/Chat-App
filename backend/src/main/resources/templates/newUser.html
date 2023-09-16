@@ -9,18 +9,16 @@
                 Error.
             </div>
         </td>
-        <div class="fs-3 text-white">
+        <div class="fs-3 text-white my-4">
             Hello, new user.
         </div>
-        <br>
         <div class="fs-3 text-white">
             Input a username to get started.
         </div>
         <form class="form-signin form-floating my-3 d-flex flex-column justify-content-center align-items-center" method="post" action="/api/login/new_user">
             <input type="text" class="form-control" name="username" placeholder="username" th:value="${param.username}" autoComplete='off'>
             <label for="username">Username</label>
-            <br>
-            <input class="btn btn-light" type="submit" value="Submit">
+            <input class="btn btn-light my-4" type="submit" value="Submit">
         </form>
     </div>
 
