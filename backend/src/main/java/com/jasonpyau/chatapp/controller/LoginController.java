@@ -45,8 +45,8 @@ public class LoginController {
 
     @PostMapping(path = "/new_user", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @RateLimitAPI(Token.DEFAULT_TOKEN)
-    public ResponseEntity<Void> newUser(@GetUser User user, @RequestParam("username") String username) {
-        userService.newUser(user, username);
+    public ResponseEntity<Void> newUser(@GetUser User user, @RequestParam("username") String username, @AuthenticationPrincipal OAuth2User oAuth2User) {
+        userService.newUser(user, username, oAuth2User);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/")).build();
     }
 

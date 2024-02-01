@@ -20,9 +20,9 @@ public class CustomOAuth2User implements OAuth2User {
     private Collection<? extends GrantedAuthority> authorities;
 
     public CustomOAuth2User(User user, Map<String, Object> attributes) {
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+user.getRole().toString()));
         this.user = user;
-        this.attributes = attributes;     
+        this.attributes = attributes;
+        refreshAuthority();
     }
 
     @Override
@@ -38,5 +38,9 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
-    } 
+    }
+
+    public void refreshAuthority() {
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+user.getRole().toString()));
+    }
 }

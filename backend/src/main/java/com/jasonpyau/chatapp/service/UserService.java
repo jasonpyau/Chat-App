@@ -5,7 +5,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.jasonpyau.chatapp.entity.User;
@@ -35,7 +38,7 @@ public class UserService {
         return oAuth2User.getUser();
     }
 
-    public void newUser(User user, String username) {
+    public void newUser(User user, String username, OAuth2User oAuth2User) {
         if (userRepository.existsByUsername(username)) {
             throw new InvalidUsernameException(username+" is already taken. Try a different username.", username);
         }
@@ -45,6 +48,12 @@ public class UserService {
         if (!violations.isEmpty()) {
             throw new InvalidUsernameException(new ConstraintViolationException(violations).getMessage(), username);
         }
+        // Make sure the OAuth2User has updated authorities, as it's not refreshed until user re-logins.
+        CustomOAuth2User customOAuth2User = (CustomOAuth2User)oAuth2User;
+        customOAuth2User.refreshAuthority();
+        // Update for the Security Config.
+        Authentication newAuth = new OAuth2AuthenticationToken(customOAuth2User, customOAuth2User.getAuthorities(), customOAuth2User.getName());
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
         userRepository.save(user);
     }
 
