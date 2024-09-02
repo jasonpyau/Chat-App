@@ -54,14 +54,14 @@ sudo apt update
 
 sudo apt install openjdk-17-jdk
 
-sudo apt install maven
+cd ./backend
 
-sudo mvn spring-boot:run
+sudo bash ./mvnw spring-boot:run
 ```
 
 **Update Webpack bundle on save**
 ```
-cd frontend
+cd ./frontend
 
 npm run watch
 ```
