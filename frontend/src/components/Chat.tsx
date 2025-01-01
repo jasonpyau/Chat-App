@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import "../css/global.css";
 import { GroupChat } from '../types/GroupChat';
 import SockJS from 'sockjs-client';
@@ -10,6 +10,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { checkError, checkRedirect } from '../App';
 import UsersView from './UsersView';
 import { User } from '../types/User';
+import { filesize } from 'filesize';
 
 
 interface ChatProp {
@@ -53,6 +54,10 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     const searchRef = useRef<HTMLInputElement>();
 
     const [lastMessageSent, setLastMessageSent] = useState<number>(0);
+
+    const [currentFileUpload, setCurrentFileUpload] = useState<File>(null);
+
+    const fileUploadRef = useRef<HTMLInputElement>();
 
     useEffect(() => {
         stompClient.current = Stomp.over(new SockJS("/ws"));
@@ -99,6 +104,34 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+    }
+
+    const handleFileUpload = () => {
+        if (fileUploadRef.current.files.length > 0) {
+            const file = fileUploadRef.current.files[0];
+            if (!file) {
+                return;
+            }
+            console.log(file);
+            if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+                fileUploadRef.current.value = "";
+                setCurrentFileUpload(null);
+                setErrorMessage("File must be a JPEG, PNG, or GIF.");
+                setTimeout(() => {setErrorMessage('')}, 3000);
+            } else if (file.size > 10*1024*1024) {
+                fileUploadRef.current.value = "";
+                setCurrentFileUpload(null);
+                setErrorMessage("File must be less than 10MB.");
+                setTimeout(() => {setErrorMessage('')}, 3000);
+            } else {
+                setCurrentFileUpload(file);
+            }
+        }
+    }
+
+    const closeFileUpload = () => {
+        fileUploadRef.current.value = "";
+        setCurrentFileUpload(null);
     }
 
     const sendMessage = () => {
@@ -276,9 +309,32 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                             }
                         </div>
                     </div>
+                    {currentFileUpload && 
+                    <div style={{maxWidth: "300px"}} className="px-2 my-2 bg-dark bg-gradient d-flex flex-column justify-content-between">
+                        <div data-bs-theme="dark" className="d-flex justify-content-end my-1">
+                            <button type="button" className="btn-close" aria-label="Close" onClick={closeFileUpload}></button>
+                        </div>
+                        <div className="w-100 my-1 px-2 d-flex justify-content-center">
+                            <div className="d-flex justify-content-center align-content-center" style={{minHeight: "100px", maxHeight: "250px", minWidth: "250px", maxWidth: "250px"}}>
+                                <img src={URL.createObjectURL(currentFileUpload)} className="my-1 object-fit-contain mh-100 mw-100"/>
+                            </div>
+                        </div>
+                        <div className="d-flex justify-content-between my-1 fw-light" style={{fontSize: "12px"}}>
+                            <span className="mx-2">{currentFileUpload.name}</span>
+                            <span className="mx-2 text-nowrap">{filesize(currentFileUpload.size, {standard: "jedec"})}</span>
+                        </div>
+                    </div>
+                    }
                     <form className="my-2 d-flex" onSubmit={handleSubmit}>
+                            <input type="file" accept="image/jpeg, image/png, image/gif" onChange={handleFileUpload} ref={fileUploadRef} className="d-none"/>
+                            <label className="btn btn-secondary" onClick={() => fileUploadRef.current.click()}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"></path>
+                                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"></path>
+                                </svg>
+                            </label>
                         <input type="text" className="form-control flex-grow-1 mx-1" name="message" placeholder={`Message '${groupChat.name}'`} autoComplete='off' ref={messageRef}/>
-                        <button className="btn btn-dark" onClick={sendMessage}>Send</button>
+                        <button className="btn btn-secondary" onClick={sendMessage}>Send</button>
                     </form>
                 </>
             }
