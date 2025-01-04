@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "com.jasonpyau.chatapp.aws.access-key-id",
+    "type": "java.lang.String",
+    "description": "The AWS/Cloudflare R2 access key id."
+  },
+  {
+    "name": "com.jasonpyau.chatapp.aws.secret-access-key",
+    "type": "java.lang.String",
+    "description": "The AWS/Cloudflare R2 secret access key."
+  },
+  {
+    "name": "com.jasonpyau.chatapp.aws.endpoint",
+    "type": "java.lang.String",
+    "description": "The AWS endpoint used for AmazonS3Service.java. See https://docs.aws.amazon.com/general/latest/gr/rande.html for AWS S3 or https://developers.cloudflare.com/r2/api/s3/api/ for Cloudflare R2 (Using AWS SDK)"
+  },
+  {
+    "name": "com.jasonpyau.chatapp.aws.bucket",
+    "type": "java.lang.String",
+    "description": "The AWS bucket used for AmazonS3Service.java."
+  }
+]}

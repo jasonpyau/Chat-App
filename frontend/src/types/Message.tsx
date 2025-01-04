@@ -1,3 +1,4 @@
+import { Attachment } from "./Attachment";
 import { User } from "./User";
 
 export type Message = {
@@ -6,7 +7,8 @@ export type Message = {
     createdAt: number,
     modifiedAt: number,
     messageType: MessageType,
-    sender: User
+    sender: User,
+    attachments: Attachment[],
 }
 
-export type MessageType = 'USER_JOIN' | 'USER_LEAVE' |'USER_CHAT' | 'USER_RENAME';
+export type MessageType = 'USER_JOIN' | 'USER_LEAVE' |'USER_CHAT' | 'USER_RENAME' | 'HIDDEN';

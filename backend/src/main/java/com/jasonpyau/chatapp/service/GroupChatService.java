@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.jasonpyau.chatapp.entity.GroupChat;
@@ -17,7 +18,6 @@ import com.jasonpyau.chatapp.form.AddGroupChatUserForm;
 import com.jasonpyau.chatapp.form.NewGroupChatForm;
 import com.jasonpyau.chatapp.form.RenameGroupChatForm;
 import com.jasonpyau.chatapp.repository.GroupChatRepository;
-import com.jasonpyau.chatapp.repository.MessageRepository;
 import com.jasonpyau.chatapp.util.CustomValidator;
 import com.jasonpyau.chatapp.util.DateFormat;
 
@@ -28,7 +28,8 @@ public class GroupChatService {
     private UserService userService;
 
     @Autowired
-    private MessageRepository messageRepository;
+    @Lazy
+    private MessageService messageService;
 
     @Autowired
     private GroupChatRepository groupChatRepository;
@@ -95,7 +96,7 @@ public class GroupChatService {
                                 .build();
         groupChat.setLastMessageAt(DateFormat.getUnixTime());
         groupChatRepository.save(groupChat);
-        return messageRepository.save(message);
+        return messageService.save(message);
     }
 
     public Message removeUser(User user, Long groupChatId) {
@@ -112,7 +113,7 @@ public class GroupChatService {
         groupChat.removeFromGroupChat(user);
         groupChat.setLastMessageAt(DateFormat.getUnixTime());
         groupChatRepository.save(groupChat);
-        return messageRepository.save(message);
+        return messageService.save(message);
     }
 
     public Message renameGroupChat(User user, RenameGroupChatForm form, Long groupChatId) {
@@ -132,6 +133,10 @@ public class GroupChatService {
         groupChat.setLastMessageAt(DateFormat.getUnixTime());
         groupChat.setName(form.getName());
         groupChatRepository.save(groupChat);
-        return messageRepository.save(message); 
+        return messageService.save(message); 
+    }
+
+    public GroupChat save(GroupChat groupChat) {
+        return groupChatRepository.save(groupChat);
     }
 }

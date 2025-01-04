@@ -34,6 +34,11 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
                     <div className="mx-1 text-break">
                         {message.content}
                     </div>
+                    {message.attachments.map(attachment => 
+                        <div className="d-flex" style={{minHeight: "50px", maxHeight: "300px", minWidth: "100px", maxWidth: "300px"}}>
+                            <img src={attachment.url} className="my-1 object-fit-contain mh-100 mw-100" title={attachment.fileName}/>
+                        </div>
+                    )}
                 </div>
             </div>
         }

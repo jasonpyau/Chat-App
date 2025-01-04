@@ -112,7 +112,6 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
             if (!file) {
                 return;
             }
-            console.log(file);
             if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
                 fileUploadRef.current.value = "";
                 setCurrentFileUpload(null);
@@ -134,18 +133,35 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
         setCurrentFileUpload(null);
     }
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         const curr: number = Date.now();
         const client: Client = stompClient.current;
-        if (curr-lastMessageSent < 500) {
-            setErrorMessage("Please wait 500ms before sending another message.");
-            setTimeout(() => {setErrorMessage('')}, 500);
+        if (curr-lastMessageSent < 1000) {
+            setErrorMessage("Please wait 1000ms before sending another message.");
+            setTimeout(() => {setErrorMessage('')}, 1000);
         } else {
             const message = {
-                content: messageRef.current.value
+                content: messageRef.current.value,
+                file: null as string,
+                fileName: null as string,
             };
+            const getFileDataURL = (file: File) => {
+                return new Promise<string>(resolve => {
+                    const fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.onloadend = () => {
+                        resolve(fileReader.result as string);
+                    }
+                });
+            }
+            if (currentFileUpload) {
+                message.file = await getFileDataURL(currentFileUpload);
+                message.fileName = currentFileUpload.name;
+            }
             client.send(`/app/send/${groupChat.id}`, {}, JSON.stringify(message));
             messageRef.current.value = "";
+            fileUploadRef.current.value = "";
+            setCurrentFileUpload(null);
             setLastMessageSent(curr);
         }
     }
