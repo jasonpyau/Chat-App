@@ -1,10 +1,13 @@
 package com.jasonpyau.chatapp.service;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -15,6 +18,7 @@ import com.jasonpyau.chatapp.entity.User;
 import com.jasonpyau.chatapp.entity.User.Role;
 import com.jasonpyau.chatapp.exception.InvalidInputException;
 import com.jasonpyau.chatapp.exception.InvalidUsernameException;
+import com.jasonpyau.chatapp.form.NewGroupChatForm;
 import com.jasonpyau.chatapp.repository.UserRepository;
 import com.jasonpyau.chatapp.security.CustomOAuth2User;
 import com.jasonpyau.chatapp.util.CustomValidator;
@@ -29,6 +33,10 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    @Lazy
+    private GroupChatService groupChatService;
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -55,6 +63,11 @@ public class UserService {
         Authentication newAuth = new OAuth2AuthenticationToken(customOAuth2User, customOAuth2User.getAuthorities(), customOAuth2User.getName());
         SecurityContextHolder.getContext().setAuthentication(newAuth);
         userRepository.save(user);
+        // Give user a group chat by themselves by default.
+        groupChatService.newGroupChat(user, NewGroupChatForm.builder()
+                                            .name(username+"'s chat")
+                                            .usernames(new HashSet<>(List.of(username)))
+                                            .build());
     }
 
     public User findByUsername(String username) {
