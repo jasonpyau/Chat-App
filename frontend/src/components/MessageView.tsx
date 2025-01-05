@@ -2,9 +2,11 @@ import React from 'react';
 import "../css/global.css";
 import { Message } from '../types/Message';
 import { DefaultPicture, User } from '../types/User';
+import { Attachment } from '../types/Attachment';
 
 interface MessageViewProp {
-    message: Message
+    message: Message,
+    setCurrentImageExpand: (currentImageExpand: Attachment) => void,
 }
 
 const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
@@ -35,6 +37,11 @@ const MessageView: React.FC<MessageViewProp> = (props: MessageViewProp) => {
                         {message.content}
                     </div>
                     {message.attachments.map(attachment => 
+                        (attachment.attachmentType === 'image/gif' || attachment.attachmentType === 'image/jpeg' || attachment.attachmentType === 'image/png') ?
+                        <div className="d-flex" data-bs-target="#imageExpandModal" data-bs-toggle="modal" style={{minHeight: "50px", maxHeight: "300px", minWidth: "100px", maxWidth: "300px", cursor: 'pointer'}} onClick={() => props.setCurrentImageExpand(attachment)}>
+                            <img src={attachment.url} className="my-1 object-fit-contain mh-100 mw-100" title={attachment.fileName}/>
+                        </div>
+                        :
                         <div className="d-flex" style={{minHeight: "50px", maxHeight: "300px", minWidth: "100px", maxWidth: "300px"}}>
                             <img src={attachment.url} className="my-1 object-fit-contain mh-100 mw-100" title={attachment.fileName}/>
                         </div>

@@ -11,6 +11,7 @@ import { checkError, checkRedirect } from '../App';
 import UsersView from './UsersView';
 import { User } from '../types/User';
 import { filesize } from 'filesize';
+import { Attachment } from '../types/Attachment';
 
 
 interface ChatProp {
@@ -59,6 +60,8 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
 
     const fileUploadRef = useRef<HTMLInputElement>();
 
+    const [currentImageExpand, setCurrentImageExpand] = useState<Attachment>(null);
+
     useEffect(() => {
         stompClient.current = Stomp.over(new SockJS("/ws"));
         const client: Client = stompClient.current;
@@ -85,7 +88,8 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     }
 
     const onError = () => {
-        alert("Error in connecting to web socket, try again. Please contact me if this persists.");
+        setErrorMessage("Error in connecting to web socket, refresh.");
+        setTimeout(() => {setErrorMessage('')}, 3000);
         loadMessages();
     }
 
@@ -167,6 +171,12 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     }
 
     const loadMessages = () => {
+        const messagesScroll = document.getElementById("messagesScroll");
+        if (messagesScroll) {
+            // React infinite scroll sometimes is buggy. This is temp solution for now that unfortunately momentarily hides the scroll bar.
+            messagesScroll.classList.remove("overflow-auto");
+            messagesScroll.classList.add("overflow-hidden");
+        }
         axios
             .get(`/api/message/${groupChat.id}/get`, {
                 params: {
@@ -182,6 +192,10 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                 setPageNum(curr => curr+1);
                 setOldMessages(oldMessages => [...oldMessages, ...messages]);
                 setHasMore(data.hasNext);
+                if (messagesScroll) {
+                    messagesScroll.classList.remove("overflow-hidden");
+                    messagesScroll.classList.add("overflow-auto");
+                }
             })
             .catch((e: AxiosError) => {
                 checkError(e);
@@ -238,6 +252,20 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
     
     return(
     <>
+        <div className="modal fade" id="imageExpandModal" tabIndex={-1} aria-labelledby="imageExpandModalLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered modal-lg">
+                {currentImageExpand && <div className="modal-content bg-dark">
+                    <div className="modal-header" data-bs-theme="dark">
+                        <h1 className="modal-title fs-5" id="imageExpandModalLabel">{currentImageExpand.fileName}</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setCurrentImageExpand(null)}></button>
+                    </div>
+                    <div className="modal-body">
+                        <img src={currentImageExpand.url} className="my-1 object-fit-contain mh-100 mw-100" title={currentImageExpand.fileName}/>
+                    </div>
+                </div>}
+            </div>
+        </div>
+
         <div className="p-2 d-flex flex-column h-100">
             <div className="fs-3 fw-bold border-bottom text-center text-break">
                 {groupChat.name} { chatSettingsMenu && "- Settings"}
@@ -295,7 +323,7 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                 </>
                 :
                 <>
-                    <div className="flex-grow-1 overflow-auto d-flex flex-column-reverse" style={{background: "#272929"}} id="messagesScroll">
+                    <div className="flex-grow-1 overflow-auto d-flex flex-column-reverse" style={{background: "#272929", scrollbarWidth: 'thin'}} data-bs-theme="dark" id="messagesScroll">
                         <div>
                             <InfiniteScroll
                                 dataLength={oldMessages.length}
@@ -314,13 +342,13 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                                 scrollableTarget="messagesScroll">
                                 {
                                     oldMessages.map(message => { return (
-                                        <MessageView message={message} key={message.id}/>
+                                        <MessageView message={message} key={message.id} setCurrentImageExpand={setCurrentImageExpand}/>
                                     )})
                                 }
                             </InfiniteScroll>
                             {
                                 newMessages.map(message => { return(
-                                    <MessageView message={message} key={message.id}/>
+                                    <MessageView message={message} key={message.id} setCurrentImageExpand={setCurrentImageExpand}/>
                                 )})
                             }
                         </div>
