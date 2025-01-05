@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.jasonpyau.chatapp.entity.User.Role;
 import com.jasonpyau.chatapp.security.CustomOAuth2AuthenticationFailureHandler;
 import com.jasonpyau.chatapp.security.CustomOAuth2AuthenticationSuccessHandler;
-import com.jasonpyau.chatapp.security.CustomOAuth2UserService;
+import com.jasonpyau.chatapp.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
