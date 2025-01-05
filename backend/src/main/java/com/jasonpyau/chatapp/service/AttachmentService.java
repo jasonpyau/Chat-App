@@ -53,6 +53,7 @@ public class AttachmentService {
             if (!Attachment.validAttachmentTypes().contains(mediaType)) {
                 throw new InvalidInputException(Attachment.INVALID_ATTACHMENT_TYPE);
             }
+            AttachmentType attachmentType = AttachmentType.fromValue(mediaType);
             try {
                 // Storage isn't free.
                 if (decodedBytes.length > 8*1024*1024) {
@@ -70,7 +71,8 @@ public class AttachmentService {
                 } else if (decodedBytes.length > 1*1024*1024) {
                     // Let's aim for around 0.65 MB.
                     compressedBytes = compressImage(decodedBytes, (65*1024*1024)/100);
-                } else if (decodedBytes.length > 1024*1024/4) {
+                } else if (decodedBytes.length > 1024*1024/4 && attachmentType != AttachmentType.IMAGE_GIF_VALUE) {
+                    // Don't compress GIFs under 1MB (currently this converts GIFs into images).
                     compressedBytes = compressImage(decodedBytes, 0.8);
                 }
             } catch (Exception e) {
@@ -82,7 +84,6 @@ public class AttachmentService {
                 compressedBytes = decodedBytes;
             }
             String fileHash = Hashing.sha512().hashBytes(decodedBytes).toString();
-            AttachmentType attachmentType = AttachmentType.fromValue(mediaType);
             // Need to get the attachment id before actually building the attachment.
             Attachment attachment = attachmentRepository.save(new Attachment());
             attachment = Attachment.builder()

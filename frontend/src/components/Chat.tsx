@@ -260,7 +260,15 @@ const Chat: React.FC<ChatProp> = (props: ChatProp) => {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setCurrentImageExpand(null)}></button>
                     </div>
                     <div className="modal-body">
-                        <img src={currentImageExpand.url} className="my-1 object-fit-contain mh-100 mw-100" title={currentImageExpand.fileName}/>
+                        <div className="d-flex justify-content-center w-100">
+                            <img src={currentImageExpand.url} className="my-1 object-fit-contain mh-100 mw-100" title={currentImageExpand.fileName}/>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <div className="w-100 d-flex justify-content-between">
+                            <span>{"Size: "+filesize(currentImageExpand.fileCompressByteSize, {standard: "jedec"})}</span>
+                            <span>{"Original Size: "+filesize(currentImageExpand.fileByteSize, {standard: "jedec"})}</span>
+                        </div>
                     </div>
                 </div>}
             </div>
