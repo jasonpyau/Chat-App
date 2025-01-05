@@ -96,6 +96,11 @@ public class User {
     @JsonIgnore
     private final Set<Message> messages = new HashSet<>();
 
+    @Column(name = "attachments")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "sender")
+    @JsonIgnore
+    private final Set<Attachment> attachments = new HashSet<>();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

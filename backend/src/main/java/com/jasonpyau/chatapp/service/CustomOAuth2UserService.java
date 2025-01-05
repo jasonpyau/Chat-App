@@ -1,4 +1,4 @@
-package com.jasonpyau.chatapp.security;
+package com.jasonpyau.chatapp.service;
 
 import java.util.Optional;
 
@@ -14,6 +14,7 @@ import com.jasonpyau.chatapp.entity.User.AuthenticationProvider;
 import com.jasonpyau.chatapp.entity.User.Role;
 import com.jasonpyau.chatapp.exception.OAuth2AuthenticationProcessingException;
 import com.jasonpyau.chatapp.repository.UserRepository;
+import com.jasonpyau.chatapp.security.CustomOAuth2User;
 import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfo;
 import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfoFactory;
 import com.jasonpyau.chatapp.util.DateFormat;

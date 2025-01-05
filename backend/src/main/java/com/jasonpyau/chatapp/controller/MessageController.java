@@ -43,7 +43,7 @@ public class MessageController {
     @RateLimitWebSocket(Token.DEFAULT_TOKEN)
     public Message sendMessage(@DestinationVariable(value = "id") Long id, Principal principal, @Payload NewMessageForm newMessageForm) {
         User user = userService.getUserFromWebSocket(principal);
-        return messageService.sendMessage(id, newMessageForm.getContent(), user);
+        return messageService.sendMessage(id, newMessageForm, user);
     }
 
     @GetMapping(path = "/{id}/get", produces = MediaType.APPLICATION_JSON_VALUE)

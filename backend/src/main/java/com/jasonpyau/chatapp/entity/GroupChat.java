@@ -59,6 +59,11 @@ public class GroupChat {
     @JsonIgnore
     private final Set<Message> messages = new HashSet<>();
 
+    @Column(name = "attachments")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "groupChat")
+    @JsonIgnore
+    private final Set<Attachment> attachments = new HashSet<>();
+
     @Column(name = "last_message_at")
     private Long lastMessageAt;
 

@@ -12,6 +12,6 @@ import com.jasonpyau.chatapp.entity.Message;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    @Query(value = "SELECT * FROM message m WHERE m.group_chat = :groupId AND m.created_at < :before ORDER BY m.created_at DESC", nativeQuery = true)
+    @Query(value = "SELECT * FROM message m WHERE m.group_chat = :groupId AND m.created_at < :before AND m.message_type != 'HIDDEN' ORDER BY m.created_at DESC", nativeQuery = true)
     public Page<Message> findAllInGroupChatWithPagination(Pageable pageable, @Param("groupId") Long groupId, @Param("before") Long before);
 }
