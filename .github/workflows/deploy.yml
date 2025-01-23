@@ -36,4 +36,4 @@ jobs:
             sudo mv -v ./* "$TARGET" &> /dev/null
             cd "$TARGET"
             cd backend
-            sudo nohup mvn spring-boot:run -Dspring-boot.run.jvmArguments="-XX:MaxRAM=250m -XX:+UseSerialGC -XX:InitiatingHeapOccupancyPercent=30" > spring-log.txt 2>&1 &
+            sudo nohup mvn spring-boot:run -Dspring-boot.run.jvmArguments="-XX:MaxRAM=1000m -XX:+UseSerialGC -XX:InitiatingHeapOccupancyPercent=7" > spring-log.txt 2>&1 &
