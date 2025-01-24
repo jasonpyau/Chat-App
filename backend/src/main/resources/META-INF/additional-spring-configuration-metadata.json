@@ -18,5 +18,10 @@
     "name": "com.jasonpyau.chatapp.aws.bucket",
     "type": "java.lang.String",
     "description": "The AWS bucket used for AmazonS3Service.java."
+  },
+  {
+    "name": "com.jasonpyau.chatapp.aws.public-bucket-url",
+    "type": "java.lang.String",
+    "description": "The AWS public url to the bucket where your S3 objects can be publicly accessed. See https://developers.cloudflare.com/r2/buckets/public-buckets/ for public R2 buckets."
   }
 ]}

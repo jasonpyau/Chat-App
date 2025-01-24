@@ -3,14 +3,12 @@ package com.jasonpyau.chatapp.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
+import lombok.Getter;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -27,15 +25,22 @@ public class AmazonS3Service {
 
     private S3Client s3Client;
 
+    @Getter
     private String bucket;
 
-    private Cache<String, byte[]> cache;
+    @Getter
+    private String publicBucketUrl;
     
     public AmazonS3Service(@Value("${com.jasonpyau.chatapp.aws.access-key-id}") String accessKeyId,
                             @Value("${com.jasonpyau.chatapp.aws.secret-access-key}") String secretAccessKey, 
                             @Value("${com.jasonpyau.chatapp.aws.endpoint}") String endpoint,
-                            @Value("${com.jasonpyau.chatapp.aws.bucket}") String bucket) throws URISyntaxException {
+                            @Value("${com.jasonpyau.chatapp.aws.bucket}") String bucket,
+                            @Value("${com.jasonpyau.chatapp.aws.public-bucket-url}") String publicBucketUrl) throws URISyntaxException {
         this.bucket = bucket;
+        if (StringUtils.hasText(publicBucketUrl) && publicBucketUrl.endsWith("/")) {
+            publicBucketUrl = publicBucketUrl.substring(0, publicBucketUrl.length()-1);
+        }
+        this.publicBucketUrl = publicBucketUrl;
         AwsBasicCredentials awsBasicCredentials = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
         this.s3Client = S3Client.builder()
                                 .endpointOverride(new URI(endpoint))
@@ -43,11 +48,6 @@ public class AmazonS3Service {
                                 .region(Region.of("auto"))
                                 .forcePathStyle(true)
                                 .build();
-        this.cache = CacheBuilder.newBuilder()
-                                .maximumSize(200)
-                                .expireAfterAccess(Duration.ofMinutes(30))
-                                .build();
-
     }
 
     // This could be sped up using a MultipartUpload.
@@ -56,16 +56,11 @@ public class AmazonS3Service {
                                                     .bucket(bucket)
                                                     .contentType(contentType)
                                                     .key(key)
-                                                    .ifNoneMatch(key)
                                                     .build();
         s3Client.putObject(request, RequestBody.fromBytes(bytes));
     }
 
     public byte[] getObject(String key) {
-        byte[] bytes = cache.getIfPresent(key);
-        if (bytes != null) {
-            return bytes;
-        }
         GetObjectRequest request = GetObjectRequest.builder()
                                                     .bucket(bucket)
                                                     .key(key)
@@ -76,6 +71,7 @@ public class AmazonS3Service {
         } catch (NoSuchKeyException e) {
             return null;
         }
+        byte[] bytes = null;
         try {
             bytes = objectStream.readAllBytes();
             objectStream.close();
@@ -86,9 +82,7 @@ public class AmazonS3Service {
                 System.out.println(e2.getMessage());
             }
         }
-        cache.put(key, bytes);
         return bytes;
     }
-
 
 }
