@@ -84,14 +84,15 @@ public class AttachmentService {
                 compressedBytes = decodedBytes;
             }
             String fileHash = Hashing.sha512().hashBytes(decodedBytes).toString();
+            String awsS3Key = String.format("attachment/%d/%s/%s", user.getId(), attachmentType.getValue(), fileHash);
             // Need to get the attachment id before actually building the attachment.
             Attachment attachment = attachmentRepository.save(new Attachment());
             attachment = Attachment.builder()
                                     .id(attachment.getId())
                                     .createdAt(DateFormat.getUnixTime())
                                     .attachmentType(attachmentType)
-                                    .url(String.format("/api/attachment/%d/%d/%d", groupChat.getId(), message.getId(), attachment.getId()))
-                                    .awsS3Key(String.format("attachment/%d/%s/%s", user.getId(), attachmentType.getValue(), fileHash))
+                                    .url(String.format("%s/%s", amazonS3Service.getPublicBucketUrl(), awsS3Key))
+                                    .awsS3Key(awsS3Key)
                                     .fileName(fileName)
                                     .fileHash(fileHash)
                                     .fileByteSize(decodedBytes.length)
