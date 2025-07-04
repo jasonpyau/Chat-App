@@ -12,28 +12,36 @@ jobs:
     runs-on: self-hosted
     
     steps:
-      - name: File Permissions
+      - name: Ensure permissions allow for the removal of existing files in the runner working directory
         run: |
             sudo chown -R $USER:$USER .
-      - name: Checkout
+      - name: Checkout files
         uses: actions/checkout@v4
+      - name: Copy files to desired directory and set file permissions
+        env:
+          TARGET_FOLDER: ${{ secrets.TARGET_FOLDER }}
+        run: |
+            sudo rsync -a . "$TARGET_FOLDER"
+            sudo chown -R $USER:$USER "$TARGET_FOLDER"
+            sudo chmod u+x "$TARGET_FOLDER/backend/shutDownOldVersion.sh"
+            sudo chmod u+x "$TARGET_FOLDER/backend/mvnw"
       - name: Create secrets.properties
         env:
-          PROPERTIES: ${{ secrets.SECRETS_PROPERTIES }}
+          SECRETS_PROPERTIES: ${{ secrets.SECRETS_PROPERTIES }}
+          TARGET_FOLDER: ${{ secrets.TARGET_FOLDER }}
         run: |
-            echo "$PROPERTIES" > backend/src/main/resources/secrets.properties
-      - name: Shut Down Old Version
-        run: |
-            cd backend
-            bash shutDownOldVersion.sh
-            sleep 5
-      - name: Copy files to desired directory and run Spring Boot
+            echo "$SECRETS_PROPERTIES" > "$TARGET_FOLDER/backend/src/main/resources/secrets.properties"
+      - name: Shut down old version
         env:
-          TARGET: ${{ secrets.TARGET_FOLDER }}
+          TARGET_FOLDER: ${{ secrets.TARGET_FOLDER }}
         run: |
-            sudo find "$TARGET" &> /dev/null && sudo rm -r "$TARGET"
-            sudo mkdir "$TARGET"
-            sudo mv -v ./* "$TARGET" &> /dev/null
-            cd "$TARGET"
-            cd backend
-            sudo nohup mvn spring-boot:run -Dspring-boot.run.jvmArguments="-XX:MaxRAM=1000m -XX:+UseSerialGC -XX:InitiatingHeapOccupancyPercent=7" > spring-log.txt 2>&1 &
+            "$TARGET_FOLDER/backend/shutDownOldVersion.sh"
+            sleep 5
+      - name: Run Spring Boot application
+        env:
+          TARGET_FOLDER: ${{ secrets.TARGET_FOLDER }}
+          TARGET_LOG_FOLDER: ${{ secrets.TARGET_LOG_FOLDER }}
+        run: |
+            cd "$TARGET_FOLDER/backend"
+            DATE=$(date "+%Y%m%d")
+            sudo nohup ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-XX:MaxRAM=4096m -XX:+UseSerialGC -XX:InitiatingHeapOccupancyPercent=7" >> "$TARGET_LOG_FOLDER/spring-log_$DATE.txt" 2>&1 &
