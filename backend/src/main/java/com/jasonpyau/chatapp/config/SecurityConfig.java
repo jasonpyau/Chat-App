@@ -42,7 +42,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/groupchat/**", "/api/message/**", "/api/users/**", "/api/attachment/**").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
                     .requestMatchers("/topic/**", "/app/**", "/ws/**").hasAnyRole(Role.USER.toString(), Role.ADMIN.toString())
                     .requestMatchers("/built/**").permitAll()
-                    .requestMatchers("/", "/error", "login", "logout", "/api/login/user", "/api/login/principal").permitAll()
+                    .requestMatchers("/", "/error", "/login", "/logout", "/api/login/user", "/api/login/principal").permitAll()
                     .anyRequest().authenticated();
             })
             .oauth2Login(oauth -> {
