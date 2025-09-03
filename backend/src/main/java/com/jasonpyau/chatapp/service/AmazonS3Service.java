@@ -12,6 +12,8 @@ import lombok.Getter;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.checksums.RequestChecksumCalculation;
+import software.amazon.awssdk.core.checksums.ResponseChecksumValidation;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -47,6 +49,8 @@ public class AmazonS3Service {
                                 .credentialsProvider(StaticCredentialsProvider.create(awsBasicCredentials))
                                 .region(Region.of("auto"))
                                 .forcePathStyle(true)
+                                .requestChecksumCalculation(RequestChecksumCalculation.WHEN_REQUIRED)
+                                .responseChecksumValidation(ResponseChecksumValidation.WHEN_REQUIRED)
                                 .build();
     }
 
