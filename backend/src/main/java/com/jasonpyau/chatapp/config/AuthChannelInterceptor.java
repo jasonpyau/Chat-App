@@ -2,7 +2,6 @@ package com.jasonpyau.chatapp.config;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -18,14 +17,15 @@ import com.jasonpyau.chatapp.service.RateLimitService;
 import com.jasonpyau.chatapp.service.UserService;
 import com.jasonpyau.chatapp.service.RateLimitService.Token;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Component
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private GroupChatService groupChatService;
+    private final GroupChatService groupChatService;
     
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {

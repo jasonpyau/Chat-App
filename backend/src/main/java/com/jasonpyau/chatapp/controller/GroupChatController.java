@@ -3,7 +3,6 @@ package com.jasonpyau.chatapp.controller;
 import java.security.Principal;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +29,16 @@ import com.jasonpyau.chatapp.service.UserService;
 import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/api/groupchat")
 public class GroupChatController {
 
-    @Autowired
-    private GroupChatService groupChatService;
+    private final GroupChatService groupChatService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping(path = "/new", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @RateLimitAPI(Token.EXPENSIVE_TOKEN)

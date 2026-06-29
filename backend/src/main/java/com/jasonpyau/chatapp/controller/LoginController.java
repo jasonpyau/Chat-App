@@ -3,7 +3,6 @@ package com.jasonpyau.chatapp.controller;
 import java.net.URI;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,14 @@ import com.jasonpyau.chatapp.service.UserService;
 import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/login")
 public class LoginController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping(path = "/principal", produces = MediaType.APPLICATION_JSON_VALUE)
     public OAuth2User principal(@AuthenticationPrincipal OAuth2User user) {

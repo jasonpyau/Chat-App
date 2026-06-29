@@ -3,7 +3,6 @@ package com.jasonpyau.chatapp.service;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -24,21 +23,25 @@ import com.jasonpyau.chatapp.util.DateFormat;
 @Service
 public class GroupChatService {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     @Lazy
-    private MessageService messageService;
+    private final UserService userService;
 
-    @Autowired
-    private GroupChatRepository groupChatRepository;
+    @Lazy
+    private final MessageService messageService;
+
+    private final GroupChatRepository groupChatRepository;
 
     private final CustomValidator<GroupChat> validator = new CustomValidator<>();
 
     private final CustomValidator<AddGroupChatUserForm> addGroupChatUserFormValidator = new CustomValidator<>();
 
     private final CustomValidator<RenameGroupChatForm> renameGroupChatFormValidator = new CustomValidator<>();
+
+    public GroupChatService(@Lazy final UserService userService, @Lazy final MessageService messageService, final GroupChatRepository groupChatRepository) {
+        this.userService = userService;
+        this.messageService = messageService;
+        this.groupChatRepository = groupChatRepository;
+    }
     
     public GroupChat newGroupChat(User user, NewGroupChatForm newGroupChatForm) {
         if (newGroupChatForm == null || newGroupChatForm.getUsernames() == null || newGroupChatForm.getUsernames().size() > 100) {

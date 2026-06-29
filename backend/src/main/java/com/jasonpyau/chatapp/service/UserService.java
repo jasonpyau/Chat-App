@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,16 +30,19 @@ import jakarta.validation.Validator;
 @Service
 public class UserService {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
     @Lazy
-    private GroupChatService groupChatService;
+    private final GroupChatService groupChatService;
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     private final CustomValidator<User> customValidator = new CustomValidator<>();
+
+    public UserService(final UserRepository userRepository, @Lazy final GroupChatService groupChatService) {
+        this.userRepository = userRepository;
+        this.groupChatService = groupChatService;
+    }
 
     public User currentUser(CustomOAuth2User oAuth2User) {
         return oAuth2User.getUser();

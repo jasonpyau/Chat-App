@@ -7,7 +7,6 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -27,15 +26,18 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @Service
 public class AttachmentService {
     
-    @Autowired
-    private AttachmentRepository attachmentRepository;
+    private final AttachmentRepository attachmentRepository;
 
-    @Autowired
-    private AmazonS3Service amazonS3Service;
+    private final AmazonS3Service amazonS3Service;
     
-    @Autowired
     @Lazy
-    private GroupChatService groupChatService;
+    private final GroupChatService groupChatService;
+
+    public AttachmentService(final AttachmentRepository attachmentRepository, final AmazonS3Service amazonS3Service, @Lazy final GroupChatService groupChatService) {
+        this.attachmentRepository = attachmentRepository;
+        this.amazonS3Service = amazonS3Service;
+        this.groupChatService = groupChatService;
+    }
 
     public Attachment newAttachment(String fileDataUrl, String fileName, GroupChat groupChat, Message message, User user) {
         try {
