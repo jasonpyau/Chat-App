@@ -2,7 +2,6 @@ package com.jasonpyau.chatapp.service;
 
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,15 +29,18 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @Service
 public class MessageService {
 
-    @Autowired
-    private AttachmentService attachmentService;
+    private final AttachmentService attachmentService;
 
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
-    @Autowired
     @Lazy
-    private GroupChatService groupChatService;
+    private final GroupChatService groupChatService;
+
+    public MessageService(final AttachmentService attachmentService, final MessageRepository messageRepository, @Lazy final GroupChatService groupChatService) {
+        this.attachmentService = attachmentService;
+        this.messageRepository = messageRepository;
+        this.groupChatService = groupChatService;
+    }
 
     private final CustomValidator<NewMessageForm> validator = new CustomValidator<>();
 

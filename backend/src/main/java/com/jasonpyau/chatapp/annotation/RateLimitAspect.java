@@ -7,7 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.jasonpyau.chatapp.entity.User;
@@ -21,8 +21,12 @@ import io.github.bucket4j.ConsumptionProbe;
 @Component
 public class RateLimitAspect {
 
-    @Autowired
-    private UserService userService;
+    @Lazy
+    private final UserService userService;
+
+    public RateLimitAspect(@Lazy final UserService userService) {
+        this.userService = userService;
+    }
 
     @Around("@annotation(RateLimitAPI)")
     public Object rateLimitAPI(ProceedingJoinPoint joinPoint) throws Throwable {

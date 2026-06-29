@@ -2,7 +2,6 @@ package com.jasonpyau.chatapp.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
@@ -19,11 +18,13 @@ import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfo;
 import com.jasonpyau.chatapp.security.OAuth2UserInfo.OAuth2UserInfoFactory;
 import com.jasonpyau.chatapp.util.DateFormat;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationProcessingException {

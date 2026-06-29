@@ -1,6 +1,5 @@
 package com.jasonpyau.chatapp.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -11,12 +10,14 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 
 import com.jasonpyau.chatapp.entity.Attachment;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private AuthChannelInterceptor authChannelInterceptor;
+    private final AuthChannelInterceptor authChannelInterceptor;
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {

@@ -3,7 +3,6 @@ package com.jasonpyau.chatapp.controller;
 import java.security.Principal;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -28,15 +27,16 @@ import com.jasonpyau.chatapp.service.UserService;
 import com.jasonpyau.chatapp.service.RateLimitService.Token;
 import com.jasonpyau.chatapp.util.Response;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/api/message")
 public class MessageController {
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
     
     @MessageMapping("/send/{id}")
     @SendTo("/topic/groupchat/{id}")

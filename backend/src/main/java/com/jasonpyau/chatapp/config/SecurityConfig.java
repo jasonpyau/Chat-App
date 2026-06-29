@@ -1,6 +1,5 @@
 package com.jasonpyau.chatapp.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,18 +11,18 @@ import com.jasonpyau.chatapp.security.CustomOAuth2AuthenticationFailureHandler;
 import com.jasonpyau.chatapp.security.CustomOAuth2AuthenticationSuccessHandler;
 import com.jasonpyau.chatapp.service.CustomOAuth2UserService;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
+    private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
 
-    @Autowired
-    private CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
+    private final CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
